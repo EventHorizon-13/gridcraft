@@ -42,3 +42,7 @@ Generated-in-code art is original and has no file to list: the UI icon set (`cra
 | `docs/images/pivot.png` | GridCraft contributors | screenshot of GridCraft rendered offscreen (`crates/ui-egui/examples/snapshot.rs`) showing an original sample workbook | MIT OR Apache-2.0 | README screenshot; no third-party content |
 | `docs/images/format-chart.png` | GridCraft contributors | screenshot of GridCraft rendered offscreen (`crates/ui-egui/examples/snapshot.rs`) showing an original sample workbook | MIT OR Apache-2.0 | README screenshot; no third-party content |
 | `docs/images/page-break.png` | GridCraft contributors | screenshot of GridCraft rendered offscreen (`crates/ui-egui/examples/snapshot.rs`) showing an original sample workbook | MIT OR Apache-2.0 | README screenshot; no third-party content |
+
+## Optional Web Chinese font build input
+
+`packaging/web/fetch-chinese-font.py` fetches AOSP `DroidSansFallbackFull.ttf` (Ascender Corporation, Apache-2.0) into an external `CRAFT_FONTS_DIR`. No font binary is committed here. Source commit `1aed5ea2dcf7cb0bf35635f378b2326461ba0df0`, font SHA-256 `97320619b0f1ce4a7cda74cf064a0ce44ef3091287bc42755597e177cccf94c2`. The generated Web package includes its original NOTICE and source/hash manifest.

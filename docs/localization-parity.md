@@ -96,3 +96,7 @@ language (none so far) and of localized function names.
 | 2026-10-11 | minor | Czech (cs) ribbon table: 266 labels (~12%), menus only |
 | 2026-10-10 | minor | Re-measured after #31, #104, #82, #38 merged: ribbon translated into ja, zh, ko, pt-BR and ru (266–268 labels, ~12%), system-language default, CJK/Thai/Hebrew font fallback; ~10% ready, 100–165 h |
 | 2026-10-10 | major | Created: English only, no catalog, ~2,200 strings, script-support gaps, open language PRs |
+
+## 2026-10-21 Web Chinese font fork
+
+This fork can embed a hash-verified AOSP Chinese fallback through the external `CRAFT_FONTS_DIR` input. It appends the face to all UI and workbook font roles, including bold, italic, serif and monospace, and reapplies it whenever the normal font definitions are rebuilt. Chinese browser preferences are accepted when the face is present. This fixes missing Chinese glyphs; it does not add translations or promise complete CJK coverage. Native builds without the opt-in `web-fonts` regression feature retain system-font discovery. See [Web Chinese font build](web-chinese-fonts.md).

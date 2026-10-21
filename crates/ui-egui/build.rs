@@ -13,6 +13,7 @@ use std::fmt::Write as _;
 use serde_json::Value;
 
 fn main() {
+    write_web_font();
     let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../contributors");
     let json = read(&dir.join("contributors.json"), "the About window shows no contributors", |t| {
         serde_json::from_str::<Value>(t).map_err(|e| e.to_string())
@@ -102,4 +103,30 @@ fn generate(json: &Value, people: &toml::Table) -> String {
     }
     let _ = writeln!(o, "];");
     o
+}
+
+/// Fonts are external build inputs; never check their binary files into this repository.
+fn write_web_font() {
+    println!("cargo::rerun-if-env-changed=CRAFT_FONTS_DIR");
+    let enabled = std::env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default() == "wasm32" || std::env::var_os("CARGO_FEATURE_WEB_FONTS").is_some();
+    let font =
+        std::env::var_os("CRAFT_FONTS_DIR").map(std::path::PathBuf::from).map(|dir| dir.join("fonts/droid-sans-fallback/DroidSansFallbackFull.ttf"));
+    let mut generated = "pub const CHINESE_FONT: Option<&[u8]> = None;\n".to_string();
+    if enabled {
+        if let Some(path) = font {
+            println!("cargo::rerun-if-changed={}", path.display());
+            if path.metadata().is_ok_and(|m| m.is_file() && m.len() <= 32 * 1024 * 1024) {
+                generated = format!("pub const CHINESE_FONT: Option<&[u8]> = Some(include_bytes!({:?}));\n", path);
+            } else {
+                println!("cargo::warning=Chinese Web font missing or oversized: {}", path.display());
+            }
+        } else {
+            println!("cargo::warning=CRAFT_FONTS_DIR is unset; Web Chinese fallback is unavailable");
+        }
+    }
+    let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap_or_default()).join("web_font.rs");
+    if let Err(error) = std::fs::write(&out, generated) {
+        eprintln!("cannot generate {}: {error}", out.display());
+        std::process::exit(1);
+    }
 }
